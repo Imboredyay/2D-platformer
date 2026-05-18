@@ -8,8 +8,9 @@ public class PlayerMovement : MonoBehaviour
     public float wallJumpHorizontalForce = 6f;
     public float wallJumpVerticalForce = 7f;
     public float wallCheckDistance = 0.6f;
+	public LayerMask groundLayer;
 
-    private Rigidbody2D rb;
+	private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private bool isGrounded;
@@ -19,7 +20,12 @@ public class PlayerMovement : MonoBehaviour
     private int currentJump;
     private const int maxJumps = 2;
 
-    void Start()
+	public float acceleration = 6f;
+	public float deceleration = 8f;
+	public float airAcceleration = 4f;
+	public float airDeceleration = 3f;
+
+	void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -30,16 +36,37 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Left & Right movement
-        float move = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(move * speed, rb.velocity.y);
+		float move = Input.GetAxis("Horizontal");
 
-        // Wall check and wall slide
-        isTouchingWall = CheckWallContact(out wallDirection);
+		float targetSpeed = move * speed;
+		float speedDifference = targetSpeed - rb.velocity.x;
+
+		float accelRate;
+
+		// Different acceleration in air vs ground
+		if (Mathf.Abs(targetSpeed) > 0.01f)
+		{
+			accelRate = isGrounded ? acceleration : airAcceleration;
+		}
+		else
+		{
+			accelRate = isGrounded ? deceleration : airDeceleration;
+		}
+
+		// Apply acceleration force
+		float movement = speedDifference * accelRate;
+
+		rb.AddForce(Vector2.right * movement);
+
+		// Wall check and wall slide
+		isTouchingWall = CheckWallContact(out wallDirection);
         if (isTouchingWall && !isGrounded && rb.velocity.y < 0f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlideSpeed));
-        }
+			if (rb.velocity.y < -wallSlideSpeed)
+			{
+				rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
+			}
+		}
 
         // Set animator parameters
         animator.SetBool("IsOnGround", isGrounded);
@@ -82,14 +109,14 @@ public class PlayerMovement : MonoBehaviour
         direction = 0;
         Vector2 position = transform.position;
 
-        RaycastHit2D rightHit = Physics2D.Raycast(position, Vector2.right, wallCheckDistance);
+        RaycastHit2D rightHit = Physics2D.Raycast(position, Vector2.right, wallCheckDistance, groundLayer);
         if (rightHit.collider != null && rightHit.collider.CompareTag("Ground"))
         {
             direction = -1;
             return true;
         }
 
-        RaycastHit2D leftHit = Physics2D.Raycast(position, Vector2.left, wallCheckDistance);
+        RaycastHit2D leftHit = Physics2D.Raycast(position, Vector2.left, wallCheckDistance, groundLayer);
         if (leftHit.collider != null && leftHit.collider.CompareTag("Ground"))
         {
             direction = 1;
@@ -98,32 +125,42 @@ public class PlayerMovement : MonoBehaviour
 
         return false;
     }
+	void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("Ground"))
+		{
+			CheckGroundCollision(collision);
+		}
+	}
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            jumpsRemaining = maxJumps;
-            currentJump = 0;
-        }
-    }
+	void OnCollisionStay2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("Ground"))
+		{
+			CheckGroundCollision(collision);
+		}
+	}
 
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            jumpsRemaining = maxJumps;
-            currentJump = 0;
-        }
-    }
+	void OnCollisionExit2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("Ground"))
+		{
+			isGrounded = false;
+		}
+	}
 
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
-    }
+	void CheckGroundCollision(Collision2D collision)
+	{
+		foreach (ContactPoint2D contact in collision.contacts)
+		{
+			// Normal pointing upward means ground is below player
+			if (contact.normal.y > 0.5f)
+			{
+				isGrounded = true;
+				jumpsRemaining = maxJumps;
+				currentJump = 0;
+				return;
+			}
+		}
+	}
 }

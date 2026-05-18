@@ -442,7 +442,7 @@ Transform:
   m_GameObject: {fileID: 113509518}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23.88, y: 1.85, z: 0}
+  m_LocalPosition: {x: -24, y: 1.85, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -462,10 +462,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   jumpForce: 7
-  wallSlideSpeed: 0.5
-  wallJumpHorizontalForce: 6
+  wallSlideSpeed: 0.2
+  wallJumpHorizontalForce: 8
   wallJumpVerticalForce: 7
-  wallCheckDistance: 1
+  wallCheckDistance: 0.75
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  acceleration: 3
+  deceleration: 3
+  airAcceleration: 1
+  airDeceleration: 1
 --- !u!50 &113509523
 Rigidbody2D:
   serializedVersion: 4
@@ -538,7 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 222171000}
   - component: {fileID: 222170999}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2200,7 +2207,7 @@ GameObject:
   - component: {fileID: 1598567420}
   - component: {fileID: 1598567419}
   - component: {fileID: 1598567421}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tilemap
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -4207,7 +4214,7 @@ TilemapCollider2D:
   m_Material: {fileID: 6200000, guid: 7a0dbb2d92e7c4b0285aa77880af00d9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
