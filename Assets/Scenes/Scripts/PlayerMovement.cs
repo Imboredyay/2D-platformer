@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
     private int currentJump;
     private const int maxJumps = 2;
 
+    private float moveInput;
+    private bool jumpPressed;
+
 	public float acceleration = 6f;
 	public float deceleration = 8f;
 	public float airAcceleration = 4f;
@@ -36,57 +39,64 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-		float move = Input.GetAxis("Horizontal");
-
-		float targetSpeed = move * speed;
-		float speedDifference = targetSpeed - rb.velocity.x;
-
-		float accelRate;
-
-		// Different acceleration in air vs ground
-		if (Mathf.Abs(targetSpeed) > 0.01f)
-		{
-			accelRate = isGrounded ? acceleration : airAcceleration;
-		}
-		else
-		{
-			accelRate = isGrounded ? deceleration : airDeceleration;
-		}
-
-		// Apply acceleration force
-		float movement = speedDifference * accelRate;
-
-		rb.AddForce(Vector2.right * movement);
-
-		// Wall check and wall slide
-		isTouchingWall = CheckWallContact(out wallDirection);
-        if (isTouchingWall && !isGrounded && rb.velocity.y < 0f)
+        // Gather input
+        moveInput = Input.GetAxis("Horizontal");
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-			if (rb.velocity.y < -wallSlideSpeed)
-			{
-				rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
-			}
-		}
+            jumpPressed = true;
+        }
 
-        // Set animator parameters
+        // Animator and sprite updates (visual only)
         animator.SetBool("IsOnGround", isGrounded);
-        animator.SetFloat("VelocityY", rb.velocity.y);
+        animator.SetFloat("VelocityY", rb != null ? rb.velocity.y : 0f);
         animator.SetBool("IsJumping", currentJump == 1);
         animator.SetBool("IsDoubleJumping", currentJump == 2);
-        animator.SetBool("Isrunning", move != 0);
+        animator.SetBool("Isrunning", Mathf.Abs(moveInput) > 0.01f);
 
-        // Flip sprite based on direction
-        if (move < 0)
+        if (moveInput < 0)
         {
             spriteRenderer.flipX = true;
         }
-        else if (move > 0)
+        else if (moveInput > 0)
         {
             spriteRenderer.flipX = false;
         }
+    }
 
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space))
+    void FixedUpdate()
+    {
+        if (rb == null) return;
+
+        float move = moveInput;
+
+        float targetSpeed = move * speed;
+        float speedDifference = targetSpeed - rb.velocity.x;
+
+        float accelRate;
+        if (Mathf.Abs(targetSpeed) > 0.01f)
+        {
+            accelRate = isGrounded ? acceleration : airAcceleration;
+        }
+        else
+        {
+            accelRate = isGrounded ? deceleration : airDeceleration;
+        }
+
+        float movement = speedDifference * accelRate;
+        rb.AddForce(Vector2.right * movement);
+
+        // Wall check and wall slide
+        isTouchingWall = CheckWallContact(out wallDirection);
+        if (isTouchingWall && !isGrounded && rb.velocity.y < 0f)
+        {
+            if (rb.velocity.y < -wallSlideSpeed)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
+            }
+        }
+
+        // Handle jumps (using flag set in Update)
+        if (jumpPressed)
         {
             if (isTouchingWall && !isGrounded)
             {
@@ -101,6 +111,8 @@ public class PlayerMovement : MonoBehaviour
                 jumpsRemaining--;
                 currentJump++;
             }
+
+            jumpPressed = false;
         }
     }
 
