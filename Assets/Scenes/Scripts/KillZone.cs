@@ -51,7 +51,7 @@ public class KillZone : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other == null) return;
-        if (other.CompareTag("Player") || other.CompareTag("player"))
+        if (other.CompareTag("Player") || other.CompareTag("Player"))
         {
             Destroy(other.gameObject);
         }
@@ -60,7 +60,7 @@ public class KillZone : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision == null || collision.collider == null) return;
-        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("player"))
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Player"))
         {
             Destroy(collision.collider.gameObject);
         }
