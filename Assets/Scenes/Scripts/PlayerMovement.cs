@@ -8,8 +8,12 @@ public class PlayerMovement : MonoBehaviour
     public float wallJumpHorizontalForce = 6f;
     public float wallJumpVerticalForce = 7f;
     public float wallCheckDistance = 0.6f;
-	public LayerMask groundLayer;
-	
+    public LayerMask groundLayer;
+
+    [Header("Audio")]
+    public AudioClip jumpSound;
+    public AudioClip deathSound;
+
 	public float dashSpeed = 20f;
 	public float dashDuration = 0.2f;
 	public float dashCooldown = 0.5f;
@@ -124,12 +128,14 @@ public class PlayerMovement : MonoBehaviour
                 jumpsRemaining = maxJumps - 1;
                 currentJump = 1;
                 isGrounded = false;
+                SoundManager.Instance?.PlaySound(jumpSound);
             }
             else if (jumpsRemaining > 0)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 jumpsRemaining--;
                 currentJump++;
+                SoundManager.Instance?.PlaySound(jumpSound);
             }
 
             jumpPressed = false;
@@ -203,18 +209,29 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	void CheckGroundCollision(Collision2D collision)
-	{
-		foreach (ContactPoint2D contact in collision.contacts)
-		{
-			// Normal pointing upward means ground is below player
-			if (contact.normal.y > 0.5f)
-			{
-				isGrounded = true;
-				jumpsRemaining = maxJumps;
-				currentJump = 0;
-				return;
-			}
+private bool playedDeathSound;
+
+    void CheckGroundCollision(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            // Normal pointing upward means ground is below player
+            if (contact.normal.y > 0.5f)
+            {
+                isGrounded = true;
+                jumpsRemaining = maxJumps;
+                currentJump = 0;
+                return;
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (!playedDeathSound && Application.isPlaying)
+        {
+            playedDeathSound = true;
+            SoundManager.Instance?.PlaySound(deathSound);
 		}
 	}
 }
