@@ -9,6 +9,10 @@ public class PlayerMovement : MonoBehaviour
     public float wallJumpVerticalForce = 7f;
     public float wallCheckDistance = 0.6f;
 	public LayerMask groundLayer;
+	
+	public float dashSpeed = 20f;
+	public float dashDuration = 0.2f;
+	public float dashCooldown = 0.5f;
 
 	private Rigidbody2D rb;
     private Animator animator;
@@ -18,15 +22,21 @@ public class PlayerMovement : MonoBehaviour
     private int wallDirection;
     private int jumpsRemaining;
     private int currentJump;
-    private const int maxJumps = 2;
+    private const int maxJumps = 1;
+
 
     private float moveInput;
     private bool jumpPressed;
+    private bool dashPressed;
+    private bool isDashing;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private float dashDirection;
 
-	public float acceleration = 6f;
-	public float deceleration = 8f;
-	public float airAcceleration = 4f;
-	public float airDeceleration = 3f;
+	public float acceleration = 20f;
+	public float deceleration = 18f;
+	public float airAcceleration = 12f;
+	public float airDeceleration = 8f;
 
 	void Start()
     {
@@ -44,6 +54,16 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpPressed = true;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            dashPressed = true;
+        }
+
+        // Update cooldown timer
+        if (dashCooldownTimer > 0)
+        {
+            dashCooldownTimer -= Time.deltaTime;
         }
 
         // Animator and sprite updates (visual only)
@@ -114,6 +134,28 @@ public class PlayerMovement : MonoBehaviour
 
             jumpPressed = false;
         }
+
+        // Handle dash
+        if (dashPressed && !isDashing && dashCooldownTimer <= 0)
+        {
+            isDashing = true;
+            dashTimer = dashDuration;
+            dashDirection = moveInput != 0 ? moveInput : (spriteRenderer.flipX ? -1 : 1);
+            dashCooldownTimer = dashCooldown;
+        }
+
+        if (isDashing)
+        {
+            dashTimer -= Time.deltaTime;
+            rb.velocity = new Vector2(dashDirection * dashSpeed, rb.velocity.y);
+
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+            }
+        }
+
+        dashPressed = false;
     }
 
     private bool CheckWallContact(out int direction)

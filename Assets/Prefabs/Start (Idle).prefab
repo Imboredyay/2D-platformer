@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 662697947758061247}
   - component: {fileID: 3253120382870127817}
   - component: {fileID: 4189729556970126128}
+  - component: {fileID: 5696154868525637919}
   m_Layer: 0
   m_Name: Start (Idle)
   m_TagString: Untagged
@@ -100,3 +101,48 @@ MonoBehaviour:
   playerPrefab: {fileID: 7968745859882800603, guid: a738ffe7ecfce4ef9a7a839989fcae48, type: 3}
   spawnOffset: {x: 0, y: 0}
   useLocalOffset: 0
+--- !u!61 &5696154868525637919
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7209726478796564589}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4, y: 4}
+    newSize: {x: 4, y: 4}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 4, y: 4}
+  m_EdgeRadius: 0

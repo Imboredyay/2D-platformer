@@ -192,7 +192,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  acceleration: 10
-  deceleration: 10
-  airAcceleration: 1
-  airDeceleration: 1
+  acceleration: 5
+  deceleration: 5
+  airAcceleration: 5
+  airDeceleration: 5
