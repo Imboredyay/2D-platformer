@@ -2358,7 +2358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403670e9033eb4aaa89a4452e2283d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTime: 2
+  startTime: 322
   timeDisplay: {fileID: 688700935}
   playerTag: Player
   timeUpSceneName: Timeup

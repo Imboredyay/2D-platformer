@@ -6,6 +6,12 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 7f;
     public LayerMask groundLayer;
 
+    [Header("Wall Slide")]
+    public Transform wallCheck;
+    public float wallCheckRadius = 0.2f;
+    public LayerMask wallLayer;
+    public float wallSlideSpeed = 2f;
+
     [Header("Audio")]
     public AudioClip jumpSound;
     public AudioClip deathSound;
@@ -18,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private bool isGrounded;
+    private bool isWallSliding;
     private int jumpsRemaining;
     private int currentJump;
     private const int maxJumps = 1;
@@ -102,6 +109,22 @@ public class PlayerMovement : MonoBehaviour
 
         float movement = speedDifference * accelRate;
         rb.AddForce(Vector2.right * movement);
+
+        // Wall sliding detection and behavior
+        bool touchingWall = false;
+        if (wallCheck != null)
+        {
+            touchingWall = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, wallLayer);
+        }
+
+        isWallSliding = touchingWall && !isGrounded && rb.velocity.y < 0f;
+        if (isWallSliding)
+        {
+            if (rb.velocity.y < -wallSlideSpeed)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
+            }
+        }
 
         // Handle jumps
         if (jumpPressed)
@@ -189,4 +212,15 @@ private bool playedDeathSound;
             SoundManager.Instance?.PlaySound(deathSound);
 		}
 	}
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        if (wallCheck != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(wallCheck.position, wallCheckRadius);
+        }
+    }
+#endif
 }
