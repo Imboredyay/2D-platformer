@@ -36,14 +36,19 @@ public class PlayerMovement : MonoBehaviour
 	public float airAcceleration = 12f;
 	public float airDeceleration = 8f;
 
-	void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         jumpsRemaining = maxJumps;
         currentJump = 0;
-        moveInput = Input.GetAxis("Horizontal");
+    }
+
+    void Update()
+    {
+
+		moveInput = Input.GetAxis("Horizontal");
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpPressed = true;
