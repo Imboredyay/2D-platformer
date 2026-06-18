@@ -43,6 +43,10 @@ public class TimeManager : MonoBehaviour
     {
         hasTriggeredTimeUp = true;
         DestroyPlayer();
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayGameOver();
+        }
         SceneManager.LoadScene(timeUpSceneName, LoadSceneMode.Additive);
     }
 

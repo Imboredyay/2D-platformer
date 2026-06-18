@@ -4,10 +4,6 @@ public class PlayerMovementMulti : NetworkBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 7f;
-    public float wallSlideSpeed = 1.5f;
-    public float wallJumpHorizontalForce = 6f;
-    public float wallJumpVerticalForce = 7f;
-    public float wallCheckDistance = 0.6f;
     public LayerMask groundLayer;
 
     [Header("Audio")]
@@ -22,8 +18,6 @@ public class PlayerMovementMulti : NetworkBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private bool isGrounded;
-    private bool isTouchingWall;
-    private int wallDirection;
     private int jumpsRemaining;
     private int currentJump;
     private const int maxJumps = 1;
@@ -111,28 +105,10 @@ public class PlayerMovementMulti : NetworkBehaviour
         float movement = speedDifference * accelRate;
         rb.AddForce(Vector2.right * movement);
 
-        // Wall check and wall slide
-        isTouchingWall = CheckWallContact(out wallDirection);
-        if (isTouchingWall && !isGrounded && rb.velocity.y < 0f)
-        {
-            if (rb.velocity.y < -wallSlideSpeed)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
-            }
-        }
-
         // Handle jumps (using flag set in Update)
         if (jumpPressed)
         {
-            if (isTouchingWall && !isGrounded)
-            {
-                rb.velocity = new Vector2(wallJumpHorizontalForce * wallDirection, wallJumpVerticalForce);
-                jumpsRemaining = maxJumps - 1;
-                currentJump = 1;
-                isGrounded = false;
-                SoundManager.Instance?.PlaySound(jumpSound);
-            }
-            else if (jumpsRemaining > 0)
+            if (jumpsRemaining > 0)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 jumpsRemaining--;
@@ -166,27 +142,6 @@ public class PlayerMovementMulti : NetworkBehaviour
         dashPressed = false;
     }
 
-    private bool CheckWallContact(out int direction)
-    {
-        direction = 0;
-        Vector2 position = transform.position;
-
-        RaycastHit2D rightHit = Physics2D.Raycast(position, Vector2.right, wallCheckDistance, groundLayer);
-        if (rightHit.collider != null && rightHit.collider.CompareTag("Ground"))
-        {
-            direction = -1;
-            return true;
-        }
-
-        RaycastHit2D leftHit = Physics2D.Raycast(position, Vector2.left, wallCheckDistance, groundLayer);
-        if (leftHit.collider != null && leftHit.collider.CompareTag("Ground"))
-        {
-            direction = 1;
-            return true;
-        }
-
-        return false;
-    }
 	void OnCollisionEnter2D(Collision2D collision)
 	{
 		if (collision.gameObject.CompareTag("Ground"))

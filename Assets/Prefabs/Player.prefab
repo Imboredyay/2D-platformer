@@ -192,6 +192,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  jumpSound: {fileID: 8300000, guid: 2878e6bf804691d41a6d8c38e1b3b64e, type: 3}
+  deathSound: {fileID: 8300000, guid: 86a74f835cac39d4ab282575b202797e, type: 3}
+  dashSpeed: 20
+  dashDuration: 0.2
+  dashCooldown: 0.5
   acceleration: 5
   deceleration: 5
   airAcceleration: 5
