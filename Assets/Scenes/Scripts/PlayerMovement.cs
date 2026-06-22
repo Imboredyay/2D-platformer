@@ -80,12 +80,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (moveInput < 0)
         {
-            spriteRenderer.flipX = true;
-        }
+			transform.localScale = new Vector3(-1, transform.localScale.y, 1);
+		}
         else if (moveInput > 0)
         {
-            spriteRenderer.flipX = false;
-        }
+			transform.localScale = new Vector3(1, transform.localScale.y, 1);
+		}
     }
 
     void FixedUpdate()
