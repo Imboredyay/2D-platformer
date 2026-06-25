@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float wallCheckRadius = 0.2f;
     public LayerMask wallLayer;
     public float wallSlideSpeed = 2f;
+    public float wallJumpXSpeed = 8f;
 
     [Header("Audio")]
     public AudioClip jumpSound;
@@ -127,6 +128,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Handle jumps
+        // Wall-jump: when jump is pressed while sliding on a wall, launch away
+        if (jumpPressed && isWallSliding)
+        {
+            int facingDir = transform.localScale.x > 0 ? 1 : -1;
+            rb.velocity = new Vector2(-facingDir * wallJumpXSpeed, jumpForce);
+            jumpPressed = false;
+            isWallSliding = false;
+            jumpsRemaining = 0;
+            currentJump = 1;
+            SoundManager.Instance?.PlaySound(jumpSound);
+        }
+
         if (jumpPressed)
         {
             if (jumpsRemaining > 0)
