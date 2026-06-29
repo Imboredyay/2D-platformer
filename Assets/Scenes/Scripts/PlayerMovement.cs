@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallSliding;
     private int jumpsRemaining;
     private int currentJump;
-    private const int maxJumps = 1;
+    private const int maxJumps = 3;
 
 
     private float moveInput;
