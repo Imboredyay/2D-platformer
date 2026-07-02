@@ -56,8 +56,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-		moveInput = Input.GetAxis("Horizontal");
-        if (Input.GetKeyDown(KeyCode.Space))
+		moveInput = Input.GetAxis("Horizontal") + SimpleInput.GetAxis("Horizontal2");
+        if (Input.GetKeyDown(KeyCode.Space) || SimpleInput.GetButtonDown("Jump2"))
         {
             jumpPressed = true;
         }

@@ -97,7 +97,7 @@ public class Platform : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if (other == null) return;
-        if (other.CompareTag("Player") || other.CompareTag("player"))
+        if (other.CompareTag("Player") || other.CompareTag("Player"))
         {
             if (playerTransform == other.transform)
             {
@@ -110,7 +110,7 @@ public class Platform : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision == null || collision.collider == null) return;
-        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("player"))
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Player"))
         {
             playerTransform = collision.transform;
             playerTransform.SetParent(transform);
@@ -120,7 +120,7 @@ public class Platform : MonoBehaviour
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision == null || collision.collider == null) return;
-        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("player"))
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Player"))
         {
             if (playerTransform == collision.transform)
             {

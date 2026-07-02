@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LevelAOne.unity
+    guid: deb8055bdfff84ffdaf9549fe38d80fc
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
@@ -14,9 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level3.unity
     guid: 2ec41d0a4d9ad4fe3a11da8830997980
-  - enabled: 1
-    path: Assets/Scenes/LevelAOne.unity
-    guid: deb8055bdfff84ffdaf9549fe38d80fc
   - enabled: 1
     path: Assets/Scenes/TimeUp.unity
     guid: 3f7984009d089425983d468f992aa3f0
